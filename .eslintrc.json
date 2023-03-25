@@ -1,0 +1,68 @@
+{
+	"env": {
+		"browser": true,
+		"react-native/react-native": true
+	},
+	"extends": [
+		"prettier",
+		"plugin:prettier/recommended",
+		"eslint-config-prettier",
+		"eslint:recommended",
+		"plugin:react-native/all",
+		"plugin:react/recommended",
+		"airbnb"
+	],
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"plugins": ["react", "react-native", "prettier"],
+	"rules": {
+		"semi": ["error", "never"],
+		"quotes": ["error", "single"],
+		"comma-dangle": ["error", "never"],
+		"react-native/no-inline-styles": "off",
+		"no-alert": "off",
+		"jsx-quotes": ["error", "prefer-single"],
+		"no-undef": 2,
+		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+		"import/no-cycle": "off",
+		"no-unsafe-optional-chaining": "off",
+		"no-use-before-define": ["error", { "variables": false }],
+		"implicit-arrow-linebreak": "off",
+		"react/prop-types": [2],
+		"max-len": ["error", { "code": 140 }],
+		"object-curly-newline": "off",
+		"react/js-curly-newline": "off",
+		"react/jsx-curly-newline": "off",
+		"react-native/no-color-literals": "off",
+		"react/jsx-wrap-parentheses": "off",
+		"react/jsx-wrap-multilines": "off",
+		"indent": ["error", "tab", { "SwitchCase": 1, "offsetTernaryExpressions": true, "MemberExpression": 1 }],
+		"no-tabs": "off",
+		"no-mixed-spaces-and-tabs": 2,
+		"react/jsx-indent": ["error", "tab"],
+		"react/jsx-indent-props": ["error", "tab"]
+	},
+	"settings": {
+		"import/resolver": {
+			"node": {
+				"paths": ["node_modules"]
+			},
+			"alias": {
+				"map": [
+					["@components", "./src/components"],
+					["@context", "./src/context"],
+					["@helpers", "./src/helpers"],
+					["@screens", "./src/components/screens"],
+					["@hooks", "./src/hooks"],
+					["@images", "./src/assets/images"],
+					["@constants", "./src/constants"]
+				]
+			}
+		}
+	}
+}
