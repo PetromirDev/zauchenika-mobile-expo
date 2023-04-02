@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { UserPlus } from 'react-native-feather'
 import { View, Pressable, ScrollView } from 'react-native'
-
+import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 // Context
 import { useAppContext } from '@context/AuthContext'
@@ -13,7 +13,6 @@ import UserInfo from './UserInfo/UserInfo'
 import User from './User/User'
 import ExitButton from './ExitButton/ExitButton'
 import GroupPhoto from './GroupPhoto/GroupPhoto'
-import { arrayRemove, arrayUnion, collection, doc, getDoc, query, updateDoc, where } from 'firebase/firestore'
 import { db } from '../../../../../../firebaseConfig'
 
 function AboutGroup({ groupData, user, userEmails, setUserEmails, image }) {
@@ -48,8 +47,8 @@ function AboutGroup({ groupData, user, userEmails, setUserEmails, image }) {
 
 						const newUserSnapshot = await getDocs(newUserDataQuery)
 
-						newUserSnapshot.forEach((doc) => {
-							setUsers((oldUsers) => [...oldUsers, { ...doc.data(), id: doc.id }])
+						newUserSnapshot.forEach((document) => {
+							setUsers((oldUsers) => [...oldUsers, { ...document.data(), id: doc.id }])
 						})
 						setAddNewUser(false)
 						setNewUser('')

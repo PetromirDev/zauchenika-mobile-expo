@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { useAppContext } from '@context/AuthContext'
-import { useInterstitialAd } from '@react-native-admob/admob'
+import { TestIds, useInterstitialAd } from 'react-native-google-mobile-ads'
 import { Plus, X } from 'react-native-feather'
 import PropTypes from 'prop-types'
 // Helpers
@@ -29,7 +29,19 @@ export default function CreateGroup({ navigation }) {
 	const [description, setDescription] = useState('')
 	const [newUser, setNewUser] = useState('')
 	const [isSubmit, setIsSubmit] = useState(false)
-	const { adLoaded, adDismissed, show } = useInterstitialAd('ca-app-pub-1800635395568659/8334521137')
+	const {
+		isLoaded: isAdLoaded,
+		isClosed,
+		load,
+		show
+		// @TODO: Add ad unit id
+	} = useInterstitialAd(TestIds.INTERSTITIAL, {
+		requestNonPersonalizedAdsOnly: true
+	})
+
+	useEffect(() => {
+		load()
+	}, [load])
 
 	const removeUser = (userToDeleteEmail) => {
 		setUsers((currentUsers) => currentUsers.filter((currentUser) => currentUser !== userToDeleteEmail))
@@ -58,7 +70,7 @@ export default function CreateGroup({ navigation }) {
 
 	const showAd = () => {
 		try {
-			if (adLoaded) {
+			if (isAdLoaded) {
 				show()
 			} else {
 				navigation.reset({ index: 0, routes: [{ name: 'Групи' }] })
@@ -70,17 +82,18 @@ export default function CreateGroup({ navigation }) {
 	}
 
 	useEffect(() => {
-		if (adDismissed) {
+		if (isClosed) {
+			// Action after the ad is closed
 			navigation.reset({ index: 0, routes: [{ name: 'Групи' }] })
 		}
-	}, [adDismissed])
+	}, [isClosed, navigation])
 
 	const createGroup = async () => {
 		if (name && description && users.length > 1) {
 			if (!isSubmit) {
 				setIsSubmit(true)
 				try {
-					const newUsers = [user.email, ...oldUsers]
+					const newUsers = [user.email, ...users]
 					setUsers(newUsers)
 					await addDoc(collection(db, 'groups'), {
 						name,

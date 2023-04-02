@@ -75,12 +75,12 @@ function ChooseGroupModal({
 						</TouchableOpacity>
 						{!isLoading && myGroups.length > 0
 							? myGroups.map((group) => (
-									<Group
-										key={group.gid}
-										group={group}
-										setSelectedGroup={setSelectedGroup}
-										selectedGroup={selectedGroup}
-									/>
+								<Group
+									key={group.gid}
+									group={group}
+									setSelectedGroup={setSelectedGroup}
+									selectedGroup={selectedGroup}
+								/>
 							  ))
 							: null}
 					</ScrollView>

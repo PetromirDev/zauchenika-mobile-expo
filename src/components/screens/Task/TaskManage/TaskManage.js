@@ -2,15 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useNavigation } from '@react-navigation/native'
 import { View, StyleSheet, Alert } from 'react-native'
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { Check, Trash } from 'react-native-feather'
-
 // Context
 import { useAppContext } from '@context/AuthContext'
 // Helpers
 import { pxH } from '@helpers'
 // Components
 import IconButton from './IconButton/IconButton'
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../../../../firebaseConfig'
 
 function TaskManage({ tid, users, email }) {

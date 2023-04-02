@@ -1,32 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Image, Pressable } from 'react-native'
-
-import { useInterstitialAd } from '@react-native-admob/admob'
+import * as ImagePicker from 'react-native-image-picker'
+import { doc, updateDoc } from 'firebase/firestore'
+import { TestIds, useInterstitialAd } from 'react-native-google-mobile-ads'
 import PropTypes from 'prop-types'
 // Context
 import { useAppContext } from '@context/AuthContext'
 // Helpers
 import { pxH, uploadFileToFireBase, uploadProgress } from '@helpers'
 
-import * as ImagePicker from 'react-native-image-picker'
-import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../../../../../../firebaseConfig'
 
 const IMAGE_PICKER_OPTIONS = { noData: true }
 
 function GroupPhoto({ image, gid }) {
-	const [imageURI, setImageURI] = useState(image?.uri)
-
-	const { adLoaded, adDismissed, show } = useInterstitialAd('ca-app-pub-1800635395568659/6810513481')
+	const {
+		isLoaded: isAdLoaded,
+		isClosed,
+		load,
+		show
+		// @TODO: Add ad unit id
+	} = useInterstitialAd(TestIds.INTERSTITIAL, {
+		requestNonPersonalizedAdsOnly: true
+	})
 
 	const { palette } = useAppContext()
 	const { highlighted } = palette
-
+	const [imageURI, setImageURI] = useState(image?.uri)
 	const [progress, setProgess] = useState(0)
+
+	useEffect(() => {
+		load()
+	}, [load])
 
 	const showAd = () => {
 		try {
-			if (adLoaded) {
+			if (isAdLoaded) {
 				show()
 			} else {
 				alert('Успешно променихте снимката на групата!')
@@ -81,10 +90,10 @@ function GroupPhoto({ image, gid }) {
 		})
 	}
 	useEffect(() => {
-		if (adDismissed) {
+		if (isClosed) {
 			alert('Успешно променихте снимката на групата!')
 		}
-	}, [adDismissed])
+	}, [isClosed])
 
 	return (
 		<>

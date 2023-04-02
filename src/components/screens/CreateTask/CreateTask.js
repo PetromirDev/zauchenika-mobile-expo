@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import {
 	StyleSheet,
@@ -11,11 +11,11 @@ import {
 	TouchableOpacity,
 	Alert
 } from 'react-native'
+import { TestIds, useInterstitialAd } from 'react-native-google-mobile-ads'
 import PropTypes from 'prop-types'
 import { Calendar, Folder } from 'react-native-feather'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { collection, addDoc, serverTimestamp, getDoc, doc } from 'firebase/firestore'
-import { useInterstitialAd } from '@react-native-admob/admob'
 // Context
 import { useAppContext } from '@context/AuthContext'
 // Helpers
@@ -24,6 +24,9 @@ import { pxH } from '@helpers'
 import { MyText, BigInput, PrimaryButton } from '@components/common'
 import ChooseGroupModal from './ChooseGroupModal/ChooseGroupModal'
 import { db } from '../../../../firebaseConfig'
+
+/* SIZES */
+const ICON_SIZE = hp(3)
 
 export default function CreateTask({ navigation }) {
 	const { user, palette } = useAppContext()
@@ -37,9 +40,19 @@ export default function CreateTask({ navigation }) {
 	const [shownDate, setShownDate] = useState('')
 	const [selectedGroup, setSelectedGroup] = useState({ name: 'Само с мен', gid: user.uid })
 	const [isSubmit, setIsSubmit] = useState(false)
-	const { adLoaded, adDismissed, show } = useInterstitialAd('ca-app-pub-1800635395568659/6810513481')
-	/* SIZES */
-	const iconSize = hp(3)
+	const {
+		isLoaded: isAdLoaded,
+		isClosed,
+		load,
+		show
+		// @TODO: Add ad unit id
+	} = useInterstitialAd(TestIds.INTERSTITIAL, {
+		requestNonPersonalizedAdsOnly: true
+	})
+
+	useEffect(() => {
+		load()
+	}, [load])
 
 	// Datepicker functions
 	const showDatePicker = () => {
@@ -116,7 +129,7 @@ export default function CreateTask({ navigation }) {
 	/* ADS */
 	const showAd = () => {
 		try {
-			if (adLoaded) {
+			if (isAdLoaded) {
 				show()
 			} else {
 				navigation.reset({ index: 0, routes: [{ name: 'Начало' }] })
@@ -128,10 +141,11 @@ export default function CreateTask({ navigation }) {
 	}
 
 	useEffect(() => {
-		if (adDismissed) {
+		if (isClosed) {
+			// Action after the ad is closed
 			navigation.reset({ index: 0, routes: [{ name: 'Начало' }] })
 		}
-	}, [adDismissed])
+	}, [isClosed, navigation])
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -169,7 +183,7 @@ export default function CreateTask({ navigation }) {
 							<View style={[styles.taskSettings, { backgroundColor: inputColor }]}>
 								<View style={styles.taskSettingsLeft}>
 									<View style={[styles.iconWrapper, { backgroundColor: textSecondary }]}>
-										<Calendar width={iconSize} height={iconSize} stroke={backgroundSecondary} />
+										<Calendar width={ICON_SIZE} height={ICON_SIZE} stroke={backgroundSecondary} />
 									</View>
 									<View>
 										<MyText
@@ -201,7 +215,7 @@ export default function CreateTask({ navigation }) {
 							<View style={[styles.taskSettings, { backgroundColor: inputColor }]}>
 								<View style={styles.taskSettingsLeft}>
 									<View style={[styles.iconWrapper, { backgroundColor: highlighted }]}>
-										<Folder width={iconSize} height={iconSize} stroke={backgroundSecondary} />
+										<Folder width={ICON_SIZE} height={ICON_SIZE} stroke={backgroundSecondary} />
 									</View>
 									<View>
 										<MyText color={textSecondary} text='Споделяне' size={16} font='FiraSans-Medium' />

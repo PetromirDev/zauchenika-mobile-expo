@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { getDefaultConfig } = require('@expo/metro-config')
 
 module.exports = (() => {
@@ -11,7 +12,7 @@ module.exports = (() => {
 	}
 	config.resolver = {
 		...resolver,
-		assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
+		assetExts: [...resolver.assetExts.filter((ext) => ext !== 'svg'), 'cjs'],
 		sourceExts: [...resolver.sourceExts, 'svg']
 	}
 

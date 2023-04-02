@@ -1,6 +1,6 @@
-import { initializeApp } from 'firebase/app'
+import { initializeApp, getApps, getApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 // import Constants from 'expo-constants'
 
@@ -26,10 +26,18 @@ const firebaseConfig = {
 	measurementId: 'G-EEP1WWLR45'
 }
 
-const app = initializeApp(firebaseConfig)
+let app
+
+if (getApps().length === 0) {
+	app = initializeApp(firebaseConfig)
+} else {
+	app = getApp()
+}
 
 const auth = getAuth()
-const db = getFirestore(app)
+const db = initializeFirestore(app, {
+	experimentalForceLongPolling: true
+})
 const storage = getStorage(app)
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase

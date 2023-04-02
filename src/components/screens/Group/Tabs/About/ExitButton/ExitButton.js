@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowRight, LogOut } from 'react-native-feather'
 import { Alert, View, TouchableOpacity } from 'react-native'
-import { updateDoc, collection, doc } from 'firebase/firestore'
+import { updateDoc, doc, arrayRemove } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 // Context
 import { useAppContext } from '@context/AuthContext'
@@ -20,7 +20,7 @@ function ExitButton({ currentUserEmail, groupOwner, userEmails, gid }) {
 
 	const handleExitGroup = async () => {
 		const groupRef = doc(db, 'groups', gid)
-		await updateDoc(groupRef, { users: firestore.FieldValue.arrayRemove(currentUserEmail) })
+		await updateDoc(groupRef, { users: arrayRemove(currentUserEmail) })
 		navigation.reset({ index: 0, routes: [{ name: 'Групи' }] })
 	}
 

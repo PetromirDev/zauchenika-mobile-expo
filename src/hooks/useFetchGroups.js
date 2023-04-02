@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { doc } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebaseConfig'
 
 const useFetchGroups = ({ email, limit }) => {
@@ -20,21 +20,22 @@ const useFetchGroups = ({ email, limit }) => {
 
 		const newGroups = []
 		try {
-			const groupDocsRef = doc(db, 'groups')
-			const query = query(groupDocsRef, where('users', 'array-contains', email), limit(limit || 10))
-			const groupDocuments = await getDocs(query)
+			const groupsCollection = collection(db, 'groups')
+			const groupQuery = query(groupsCollection, where('users', 'array-contains', email), limit(limit || 10))
+			const groupDocuments = await getDocs(groupQuery)
 
-			if (!isMounted.current) return
 			if (groupDocuments.length === 0) {
+				if (!isMounted.current) return
+
 				setIsLoading(false)
 				setGroups([])
 				return
 			}
 
-			groupDocuments.forEach((doc) => {
+			groupDocuments.forEach((document) => {
 				newGroups.push({
-					...doc.data(),
-					gid: doc.id
+					...document.data(),
+					gid: document.id
 				})
 			})
 
@@ -52,7 +53,7 @@ const useFetchGroups = ({ email, limit }) => {
 	useEffect(() => {
 		isMounted.current = true
 		try {
-			fetchGroups(isMounted.current)
+			fetchGroups()
 		} catch {
 			if (isMounted.current) {
 				setError('Error while fetching groups')

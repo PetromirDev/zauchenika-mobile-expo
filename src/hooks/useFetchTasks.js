@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { collection, query } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebaseConfig'
 
 const useFetchTasks = ({ lookAt, lookType, lookFor }) => {

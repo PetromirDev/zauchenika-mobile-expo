@@ -19,7 +19,7 @@ import { pxH, resize } from '@helpers'
 import Navigation from '@components/layout/Navigation/Navigation'
 import { MyText, Loader, PrimaryButton, BigInput, MyAlert } from '@components/common'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db } from '../../../../firebaseConfig'
+import { db, auth } from '../../../../firebaseConfig'
 
 export default function ProfileSettings({ navigation }) {
 	const {
@@ -38,11 +38,11 @@ export default function ProfileSettings({ navigation }) {
 		try {
 			const userRef = doc(db, 'users', uid)
 
-			getDoc(userRef).then((doc) => {
+			getDoc(userRef).then((document) => {
 				if (isMounted) {
-					setUser(doc.data())
-					setNewDisplayName(doc.data().displayName)
-					setNewBio(doc.data().bio || '')
+					setUser(document.data())
+					setNewDisplayName(document.data().displayName)
+					setNewBio(document.data().bio || '')
 					setLoading(false)
 				}
 			})

@@ -1,0 +1,37 @@
+{
+	"name": "zauchenika",
+	"version": "1.0.0",
+	"jsEngine": "hermes",
+	"extra": {
+		"eas": {
+			"projectId": "e536bbbf-337e-4d72-9f57-aa414bf28060"
+		}
+	},
+	"slug": "zauchenika",
+	"orientation": "portrait",
+	"icon": "./assets/icon.png",
+	"userInterfaceStyle": "light",
+	"scheme": "zauchenika",
+	"splash": {
+		"image": "./assets/splash.png",
+		"resizeMode": "contain",
+		"backgroundColor": "#ffffff"
+	},
+	"assetBundlePatterns": ["**/*"],
+	"ios": {
+		"supportsTablet": true
+	},
+	"android": {
+		"adaptiveIcon": {
+			"foregroundImage": "./assets/adaptive-icon.png",
+			"backgroundColor": "#ffffff"
+		},
+		"package": "com.petromirdev.zauchenika"
+	},
+	"web": {
+		"favicon": "./assets/favicon.png"
+	},
+	"react-native-google-mobile-ads": {
+		"android_app_id": "ca-app-pub-1800635395568659~3436313053"
+	}
+}

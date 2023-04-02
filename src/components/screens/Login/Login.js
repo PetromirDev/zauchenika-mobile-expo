@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
-
-import { signInWithCredential } from 'firebase/auth'
-// import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { makeRedirectUri } from 'expo-auth-session'
+import { signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 // Authentication
 import * as WebBrowser from 'expo-web-browser'
@@ -20,38 +19,20 @@ import WaveImage from './images/wave.png'
 import LoginImage from './images/login2.svg'
 import GoogleImage from './images/google.png'
 import { auth } from '../../../../firebaseConfig'
-import { makeRedirectUri } from 'expo-auth-session'
 
 WebBrowser.maybeCompleteAuthSession()
 
-// async function onGoogleButtonPress() {
-// 	try {
-// 		// await GoogleSignin.hasPlayServices()
-// 		// Get the users ID token
-// 		// const { idToken } = await GoogleSignin.signIn()
-// 		// Create a Google credential with the token
-
-// 		const googleCredential = GoogleAuthProvider.credential(idToken)
-// 		// Sign-in the user with the credential
-// 	} catch (e) {
-// 		console.log(e)
-// 		alert('Моля опитайте отново!')
-// 	}
-// }
-
 export default function Login() {
-	const [request, response, promptAsync] = Google.useAuthRequest({
+	const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
 		androidClientId: '493922924089-f5ntifovb9nk4p46kh3corevip804ndn.apps.googleusercontent.com',
 		iosClientId: 'rando',
 		scopes: ['profile', 'email'],
 		redirectUri: makeRedirectUri({
-			scheme: 'zauchenika'
+			scheme: 'com.petromirdev.zauchenika'
 		}),
-		// useProxy: true,
+		behavior: 'web',
 		clientId: '493922924089-f5ntifovb9nk4p46kh3corevip804ndn.apps.googleusercontent.com',
 		expoClientId: '493922924089-f5ntifovb9nk4p46kh3corevip804ndn.apps.googleusercontent.com'
-		// redirectUri: '493922924089-f5ntifovb9nk4p46kh3corevip804ndn.apps.googleusercontent.com:/oauth2redirect/google'
-		// iosClientId: 'GOOGLE_GUID.apps.googleusercontent.com'
 	})
 
 	const {
@@ -61,9 +42,13 @@ export default function Login() {
 
 	useEffect(() => {
 		if (response?.type === 'success') {
-			signInWithCredential(auth, response.authentication.accessToken)
+			const credential = GoogleAuthProvider.credential(
+				response.authentication.idToken,
+				response.authentication.accessToken
+			)
+			signInWithCredential(auth, credential)
 		}
-	}, [response?.authentication?.token])
+	}, [response])
 
 	return !user ? (
 		<View style={styles.container}>
@@ -71,7 +56,6 @@ export default function Login() {
 			<Image source={TopLeftImage2} style={styles.topLeft2} />
 			<Image source={TopRightImage} style={styles.topRight} />
 			<Image source={WaveImage} style={styles.wave} />
-			{/* <Image source={LoginImage} style={styles.loginImage} /> */}
 			<LoginImage width={pxH(260)} height={pxH(180)} style={[styles.loginImage, { color: highlighted }]} />
 			<View style={styles.login}>
 				<View style={styles.welcomeMessage}>
